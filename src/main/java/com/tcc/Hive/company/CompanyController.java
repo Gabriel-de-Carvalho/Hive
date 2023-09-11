@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/company")
+@CrossOrigin(origins = "*")
 public class CompanyController {
 
     @Autowired

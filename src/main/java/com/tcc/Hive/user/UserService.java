@@ -1,16 +1,15 @@
 package com.tcc.Hive.user;
 
-import org.apache.coyote.Response;
+import com.tcc.Hive.experience.Experience;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -20,11 +19,11 @@ public class UserService {
 
 
 
-    public User createUsuario(User user) {
+    public UserHive createUsuario(UserHive userHive) {
         try {
-            User currentUser = findUser(user.getUser());
-            if(currentUser == null){
-                return userRepository.save(user);
+            UserHive currentUserHive = userRepository.findByEmail(userHive.getEmail());
+            if(currentUserHive == null){
+                return userRepository.save(userHive);
             }
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -34,11 +33,11 @@ public class UserService {
 
     }
 
-    public User findUser(String name){
+    public UserHive findUser(String name){
         try{
-            User user = userRepository.findByUser(name);
-            if(user != null){
-                return user;
+            UserHive userHive = userRepository.findByEmail(name);
+            if(userHive != null){
+                return userHive;
             }
 
         } catch (Exception e){
@@ -47,7 +46,28 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não está cadastrado");
     }
 
-//    public User updateUser(User user){
-//
-//    }
+    public void updateUser(UserHive updatedUserHive){
+         try{
+             UserHive userHive = userRepository.findByEmail(updatedUserHive.getEmail());
+             if(userHive != null){
+                 userRepository.save(updatedUserHive);
+             }
+         } catch(Exception e){
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+         }
+         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "usuário não está cadastrado");
+    }
+
+    public List<Experience> addExperience(Experience experience){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserHive userHive = userRepository.findByEmail(authentication.getName());
+        if(userHive.getExperiences() == null){
+            userHive.setExperiences(new ArrayList<>());
+        }
+        experience.setId(userHive.getExperiences().size() + 1);
+        userHive.getExperiences().add(experience);
+
+        userRepository.save(userHive);
+        return userHive.getExperiences();
+    }
 }

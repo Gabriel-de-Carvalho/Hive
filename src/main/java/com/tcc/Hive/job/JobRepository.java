@@ -4,11 +4,12 @@ import com.tcc.Hive.company.Company;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public interface JobRepository extends MongoRepository<Job, Integer> {
+public interface JobRepository extends MongoRepository<Job, Integer>, JobRepositoryCustom {
 
-    public Job findByJobTitle(String name);
-    public Job findById(int id);
+     Job findByJobTitle(String name);
+     Job findById(String id);
 
-    public ArrayList<Job> findByCompany(Company company);
+     ArrayList<Job> findByCompanyId(Company company);
     }

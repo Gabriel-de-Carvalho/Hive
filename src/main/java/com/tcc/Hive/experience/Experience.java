@@ -1,9 +1,7 @@
 package com.tcc.Hive.experience;
 
-import com.tcc.Hive.user.User;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
 @AllArgsConstructor
@@ -11,12 +9,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 public class Experience {
+
     @Id
     private int id;
     private String jobTitle;
     private String jobDesc;
     private String dateInit;
     private String dateEnd;
+    private String companyId;
     private boolean currentJob;
 //    private Company company;
 }

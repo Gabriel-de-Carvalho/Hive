@@ -1,22 +1,46 @@
 package com.tcc.Hive.user;
 
+import com.tcc.Hive.experience.Experience;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/")
-    public User createNewUser(@RequestBody User user){
-        return userService.createUsuario(user);
+    public UserHive createNewUser(@RequestBody UserHive userHive){
+        return userService.createUsuario(userHive);
     }
 
     @GetMapping("/")
-    public User getUsuario(@RequestParam String name){
-        return userService.findUser(name);
+    public UserHive getUsuario(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        return userService.findUser(user.getUsername());
+    }
+
+    @GetMapping("/hello/")
+    public String helloWorld(){
+        return "hello";
+    }
+
+    @PutMapping("/experience/")
+    public List<Experience> newExperience(@RequestBody Experience experience){
+        if(experience == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "experiencia não pode ser vazia");
+        }
+        return userService.addExperience(experience);
     }
 }

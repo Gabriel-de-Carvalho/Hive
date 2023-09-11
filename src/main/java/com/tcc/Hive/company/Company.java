@@ -1,6 +1,6 @@
 package com.tcc.Hive.company;
 
-import com.tcc.Hive.job.Job;
+import com.tcc.Hive.user.UserHive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,17 +18,16 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Company {
-
-
     @NotNull
     @NotEmpty
     @Id
     private String companyName;
     private String typeOfCompany;
     private String siteCompany;
-    private String numberEmployees;
-    private ArrayList<Job> jobsOpportunities;
+    private Long numberEmployees;
+    private ArrayList<String> jobsOpportunitiesIds;
     private String city;
     private String state;
     private String country;
+    private UserHive Owner;
 }
