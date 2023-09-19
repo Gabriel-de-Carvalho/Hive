@@ -1,5 +1,6 @@
 package com.tcc.Hive.security.utils;
 
+import com.tcc.Hive.company.Company;
 import com.tcc.Hive.dto.UserAuthenticationDTO;
 import com.tcc.Hive.user.UserHive;
 import io.jsonwebtoken.Claims;
@@ -20,6 +21,16 @@ public class JWTUtils {
         return Jwts.builder()
                 .claim("username",user.getEmail())
                 .setSubject(user.getEmail())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .compact();
+    }
+
+    public String generateAcessToken(Company company){
+        return Jwts.builder()
+                .claim("username",company.getCompanyEmail())
+                .setSubject(company.getCompanyEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)

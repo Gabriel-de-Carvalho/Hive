@@ -21,13 +21,14 @@ public class Company {
     @NotNull
     @NotEmpty
     @Id
+    private String companyEmail;
     private String companyName;
     private String typeOfCompany;
     private String siteCompany;
     private Long numberEmployees;
     private ArrayList<String> jobsOpportunitiesIds;
+    private String password;
     private String city;
     private String state;
     private String country;
-    private UserHive Owner;
 }

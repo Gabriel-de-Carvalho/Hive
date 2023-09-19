@@ -11,5 +11,5 @@ public interface JobRepository extends MongoRepository<Job, Integer>, JobReposit
      Job findByJobTitle(String name);
      Job findById(String id);
 
-     ArrayList<Job> findByCompanyId(Company company);
+     ArrayList<Job> findByCompanyIdIgnoreCase(String company);
     }

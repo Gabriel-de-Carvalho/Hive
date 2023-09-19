@@ -1,11 +1,12 @@
 package com.tcc.Hive.job;
 
-import com.tcc.Hive.user.UserHive;
+import com.tcc.Hive.dto.JobOutputDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -20,13 +21,14 @@ public class JobController {
         return jobService.FindJobByTitle(jobTitle);
     }
 
-    @PostMapping("/{id}/participant/")
-    public void joinRecruitmentProcess(@PathVariable("id") String id){
-        jobService.JoinSelectionJob(id);
+    @PostMapping(value = "/{id}/participant/", consumes = {"multipart/form-data"})
+    public void joinRecruitmentProcess(@PathVariable("id") String id, @RequestBody MultipartFile file) throws IOException {
+        ParticipantApplication participantApplication = new ParticipantApplication();
+        jobService.JoinSelectionJob(id, file);
     }
 
-    @GetMapping("/{id}/")
-    public List<UserHive> getAllParticipants(@PathVariable("id") String id){
+    @GetMapping("/{id}/participants")
+    public JobOutputDto getAllParticipants(@PathVariable("id") String id){
         return jobService.participantsFromJob(id);
     }
 
@@ -43,5 +45,25 @@ public class JobController {
     @GetMapping("/admin")
     public ResponseEntity<String> testeRotaAuthenticated(){
         return ResponseEntity.ok("teste");
+    }
+
+    @GetMapping("/download")
+    public byte[] download(){
+        return jobService.getParticipant();
+    }
+
+    @GetMapping("/company")
+    public List<Job> getAllJobsFromCompany(){
+        return jobService.getJobsFromCompany();
+    }
+
+    @GetMapping("{jobId}/applicant/{email}/curriculum/")
+    public byte[] getCurriculum(@PathVariable("jobId") String jobId, @PathVariable("email") String email){
+        return jobService.getParticipantCurriculum(jobId, email);
+    }
+
+    @PutMapping("{jobId}/close")
+    public boolean getCurriculum(@PathVariable("jobId") String jobId){
+        return jobService.closeJobOpportunity(jobId);
     }
 }

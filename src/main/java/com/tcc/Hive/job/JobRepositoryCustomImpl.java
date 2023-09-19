@@ -19,8 +19,11 @@ public class JobRepositoryCustomImpl implements JobRepositoryCustom{
     public List<Job> findJobsByKeywords(String[] keywords) {
         Query query = new Query();
         for(String keyword: keywords){
-            query.addCriteria(Criteria.where("jobDesc").regex(keyword, "i"));
+            Criteria criteria = new Criteria();
+            criteria.orOperator(Criteria.where("jobDesc").regex(keyword, "i"), Criteria.where("jobTitle").regex(keyword, "i")).andOperator(Criteria.where("active").is(true));
+            query.addCriteria(criteria);
         }
+
         return mongoTemplate.find(query, Job.class);
 
     }

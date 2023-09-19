@@ -27,19 +27,23 @@ public class Job {
     private String jobDesc;
     @NotNull
     @NotEmpty
-    private String companyId;
+        private String companyId;
     private float income;
     @NotNull
     @NotEmpty
     private boolean negotiable;
-    private ArrayList<String> participants;
+    private String typeOfJob;
+    private String modality;
+    private ArrayList<ParticipantApplication> participants;
+    private String seniority;
+    private boolean active;
 
-    public void joinParticipant(UserHive participant){
-        if(participant != null){
+    public void joinParticipant(ParticipantApplication application){
+        if(application != null){
             if(participants == null){
                 setParticipants(new ArrayList<>());
             }
-            participants.add(participant.getEmail());
+            participants.add(application);
         }
     }
 }

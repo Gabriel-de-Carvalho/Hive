@@ -19,13 +19,10 @@ public class CompanyService {
 
     public Company createCompanyPage(Company newCompany){
         try{
-            Company company = companyRepository.getCompanyByCompanyName(newCompany.getCompanyName());
+            Company company = companyRepository.getCompanyByCompanyEmail(newCompany.getCompanyEmail());
             if(company == null){
-                UserHive userHive = newCompany.getOwner();
-                userHive.getOwnedCompaniesIds().add(newCompany.getCompanyName());
-                userService.updateUser(userHive);
-                if(company.getJobsOpportunitiesIds() == null){
-                    company.setJobsOpportunitiesIds(new ArrayList<>());
+                if(newCompany.getJobsOpportunitiesIds() == null){
+                    newCompany.setJobsOpportunitiesIds(new ArrayList<>());
                 }
                 return companyRepository.save(newCompany);
             }
@@ -41,5 +38,9 @@ public class CompanyService {
             }catch(Exception e){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
             }
+    }
+
+    public Company findByEmail(String companyEmail){
+        return companyRepository.getCompanyByCompanyEmail(companyEmail);
     }
 }

@@ -40,6 +40,7 @@ public class SecurityConfiguration {
                                         .requestMatchers("/auth/**").permitAll()
                                         .requestMatchers(HttpMethod.POST,"/user/**").permitAll()
                                         .requestMatchers("/job/search/").permitAll()
+                                        .requestMatchers("/company/").permitAll()
                                         .anyRequest().authenticated();
 //                                        .anyRequest().permitAll();
                             } catch (Exception e) {

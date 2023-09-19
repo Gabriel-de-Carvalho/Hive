@@ -1,5 +1,7 @@
 package com.tcc.Hive.security.service;
 
+import com.tcc.Hive.company.Company;
+import com.tcc.Hive.company.CompanyRepository;
 import com.tcc.Hive.user.UserHive;
 import com.tcc.Hive.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,38 @@ public class UserAuthenticateService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CompanyRepository companyRepository;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         if(!email.isEmpty()) {
             UserHive userHive = userRepository.findByEmail(email);
-            UserDetails userDetails = new User(userHive.getEmail(), userHive.getPassword(), new ArrayList<>());
-            return userDetails;
+            if(userHive == null){
+                Company company = companyRepository.getCompanyByCompanyEmail(email);
+                UserDetails userDetails = new User(company.getCompanyEmail(), company.getPassword(), new ArrayList<>());
+                return userDetails;
+            } else {
+                UserDetails userDetails = new User(userHive.getEmail(), userHive.getPassword(), new ArrayList<>());
+                return userDetails;
+            }
         } else {
             throw new RuntimeException("usuário invalido");
         }
+    }
+
+    public String checkTypeAccount(String email){
+        UserHive user = userRepository.findByEmail(email);
+
+        if(user != null){
+            return "user";
+        }
+
+        Company company = companyRepository.getCompanyByCompanyEmail(email);
+        if(company != null){
+            return "company";
+        }
+
+        return "non-existent";
     }
 }
