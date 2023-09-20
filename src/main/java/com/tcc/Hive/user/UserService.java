@@ -1,5 +1,7 @@
 package com.tcc.Hive.user;
 
+import com.tcc.Hive.company.Company;
+import com.tcc.Hive.company.CompanyService;
 import com.tcc.Hive.experience.Experience;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,12 +19,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-
+    @Autowired
+    private CompanyService companyService;
 
     public UserHive createUsuario(UserHive userHive) {
         try {
             UserHive currentUserHive = userRepository.findByEmail(userHive.getEmail());
-            if(currentUserHive == null){
+            Company company = companyService.findByEmail(userHive.getEmail());
+            if(currentUserHive == null && company == null){
                 return userRepository.save(userHive);
             }
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.tcc.Hive.company;
 
 import com.tcc.Hive.user.UserHive;
+import com.tcc.Hive.user.UserRepository;
 import com.tcc.Hive.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,21 +16,19 @@ public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     public Company createCompanyPage(Company newCompany){
-        try{
             Company company = companyRepository.getCompanyByCompanyEmail(newCompany.getCompanyEmail());
-            if(company == null){
+            UserHive user = userRepository.findByEmail(newCompany.getCompanyEmail());
+            if(company == null && user == null){
                 if(newCompany.getJobsOpportunitiesIds() == null){
                     newCompany.setJobsOpportunitiesIds(new ArrayList<>());
                 }
                 return companyRepository.save(newCompany);
             }
-        } catch(Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "empresa ja existe");
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "empresa ja existe");
     }
 
     public ArrayList<Company> findCompany(String companyName){
