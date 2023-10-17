@@ -11,4 +11,5 @@ public interface CompanyRepository extends MongoRepository<Company, String> {
     ArrayList<Company> getCompaniesByCompanyNameContainingIgnoreCase(String companyName);
 
     Company getCompanyByCompanyEmail(String companyEmail);
+
 }

@@ -9,7 +9,12 @@ import com.tcc.Hive.user.UserRepository;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,7 +23,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class JobService {
@@ -48,6 +55,7 @@ public class JobService {
             application.setIdApplicant(userHive.getEmail());
             application.setPdfUser(new Binary(BsonBinarySubType.BINARY, file.getBytes()));
 
+
             Job job = jobRepository.findById(id);
             if(job.getParticipants() == null){
                 job.setParticipants(new ArrayList<>());
@@ -56,6 +64,17 @@ public class JobService {
             if(job.getParticipants().contains(application)){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "usuário já cadastrado na vaga");
             }
+
+            if(userHive.getJobOpportunitiesIds() == null){
+                userHive.setJobOpportunitiesIds(new ArrayList<>());
+            }
+
+            if(userHive.getJobOpportunitiesIds().contains(job.getId())){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "usuário já está cadastrado na vaga");
+            }
+
+            userHive.getJobOpportunitiesIds().add(job.getId());
+            userRepository.save(userHive);
             job.joinParticipant(application);
             jobRepository.save(job);
 
@@ -109,19 +128,37 @@ public class JobService {
         return newJob;
     }
 
-    public List<Job> getJobsByKeywords(String[] keywords){
-        List<Job> jobs = jobRepository.findJobsByKeywords(keywords);
+    public ResponseEntity<Map<String, Object>> getJobsByKeywords(String[] keywords, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Job> jobs = jobRepository.findJobsByKeywords(keywords, pageable);
         if(jobs.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "não há empregos de acordo com as palavras de busca");
         }
-        return jobs;
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("jobs", jobs);
+        response.put("currentPage", jobs.getNumber());
+        response.put("totalItems", jobs.getTotalElements());
+        response.put("totalPages", jobs.getTotalPages());
+
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public List<Job> getJobsFromCompany(){
+    public ResponseEntity<Map<String, Object>> getJobsFromCompany(int pageSize, int size){
+        Pageable page = PageRequest.of(pageSize, size);
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String companyId = auth.getName();
+        Page<Job> jobs = jobRepository.findByCompanyIdIgnoreCase(companyId, page);
 
-        return jobRepository.findByCompanyIdIgnoreCase(companyId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("jobs", jobs);
+        response.put("currentPage", jobs.getNumber());
+        response.put("totalItems", jobs.getTotalElements());
+        response.put("totalPages", jobs.getTotalPages());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     public byte[] getParticipantCurriculum(String jobId, String email){
@@ -145,6 +182,28 @@ public class JobService {
         job.setActive(false);
         jobRepository.save(job);
         return true;
+    }
+
+    public ResponseEntity<Map<String, Object>> getClosedJobs(int pageCount, int size){
+        Pageable page = PageRequest.of(pageCount, size);
+
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String companyEmail = auth.getName();
+        Company company = companyRepository.getCompanyByCompanyEmail(companyEmail);
+
+        Page<Job> closedJobs = jobRepository.findByCompanyIdAndActiveFalse(company.getCompanyEmail(), page);
+        if(closedJobs == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "não há trabalhos cadastrados");
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("jobs", closedJobs);
+        response.put("currentPage", closedJobs.getNumber());
+        response.put("totalItems", closedJobs.getTotalElements());
+        response.put("totalPages", closedJobs.getTotalPages());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

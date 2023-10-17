@@ -27,7 +27,7 @@ public class Job {
     private String jobDesc;
     @NotNull
     @NotEmpty
-        private String companyId;
+    private String companyId;
     private float income;
     @NotNull
     @NotEmpty

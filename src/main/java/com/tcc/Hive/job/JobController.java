@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/job")
@@ -38,23 +39,13 @@ public class JobController {
     }
 
     @GetMapping("/search/")
-    public List<Job> getJobsByKeywords(@RequestParam String keywords){
-        return jobService.getJobsByKeywords(keywords.split(","));
-    }
-
-    @GetMapping("/admin")
-    public ResponseEntity<String> testeRotaAuthenticated(){
-        return ResponseEntity.ok("teste");
-    }
-
-    @GetMapping("/download")
-    public byte[] download(){
-        return jobService.getParticipant();
+    public ResponseEntity<Map<String, Object>> getJobsByKeywords(@RequestParam String keywords, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size){
+        return jobService.getJobsByKeywords(keywords.split(","), page, size);
     }
 
     @GetMapping("/company")
-    public List<Job> getAllJobsFromCompany(){
-        return jobService.getJobsFromCompany();
+    public ResponseEntity<Map<String, Object>> getAllJobsFromCompany(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size){
+        return jobService.getJobsFromCompany(page, size);
     }
 
     @GetMapping("{jobId}/applicant/{email}/curriculum/")
@@ -63,7 +54,13 @@ public class JobController {
     }
 
     @PutMapping("{jobId}/close")
-    public boolean getCurriculum(@PathVariable("jobId") String jobId){
+    public boolean closeJob(@PathVariable("jobId") String jobId){
         return jobService.closeJobOpportunity(jobId);
+    }
+
+    @GetMapping("/closed")
+    public ResponseEntity<Map<String, Object>> closedJobs(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size){
+
+        return jobService.getClosedJobs(page, size);
     }
 }

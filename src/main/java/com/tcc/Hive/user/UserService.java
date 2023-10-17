@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -50,18 +51,6 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não está cadastrado");
     }
 
-    public void updateUser(UserHive updatedUserHive){
-         try{
-             UserHive userHive = userRepository.findByEmail(updatedUserHive.getEmail());
-             if(userHive != null){
-                 userRepository.save(updatedUserHive);
-             }
-         } catch(Exception e){
-             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-         }
-         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "usuário não está cadastrado");
-    }
-
     public List<Experience> addExperience(Experience experience){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserHive userHive = userRepository.findByEmail(authentication.getName());
@@ -73,5 +62,20 @@ public class UserService {
 
         userRepository.save(userHive);
         return userHive.getExperiences();
+    }
+
+    public UserHive updateUser(UserHive userInfoUpdated){
+        UserHive currentUser = userRepository.findByEmail(userInfoUpdated.getEmail());
+
+        if(currentUser == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "usuário não cadastrado");
+        }
+
+        currentUser.setUser(userInfoUpdated.getUser());
+        currentUser.setCurrentJob(userInfoUpdated.getCurrentJob());
+        currentUser.setBio(userInfoUpdated.getBio());
+
+        userRepository.save(currentUser);
+        return currentUser;
     }
 }

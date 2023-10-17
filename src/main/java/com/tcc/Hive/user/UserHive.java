@@ -34,4 +34,5 @@ public class UserHive {
     private ArrayList<String> ownedCompaniesIds;
     private ArrayList<Experience> experiences;
     private ArrayList<GrantedAuthority> roles;
+    private ArrayList<String> jobOpportunitiesIds;
 }

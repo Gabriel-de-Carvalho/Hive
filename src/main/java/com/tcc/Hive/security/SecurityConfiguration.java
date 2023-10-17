@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                                 authz.and().cors().and().csrf().disable().authorizeHttpRequests()
                                         .requestMatchers("/auth/**").permitAll()
                                         .requestMatchers(HttpMethod.POST,"/user/**").permitAll()
+                                        .requestMatchers("/error").permitAll()
                                         .requestMatchers("/job/search/").permitAll()
                                         .requestMatchers("/company/").permitAll()
                                         .anyRequest().authenticated();
