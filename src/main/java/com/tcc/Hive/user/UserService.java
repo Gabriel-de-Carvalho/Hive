@@ -3,8 +3,10 @@ package com.tcc.Hive.user;
 import com.tcc.Hive.company.Company;
 import com.tcc.Hive.company.CompanyService;
 import com.tcc.Hive.experience.Experience;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -70,12 +72,31 @@ public class UserService {
         if(currentUser == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "usuário não cadastrado");
         }
+        if(userInfoUpdated.getUser() != null && !userInfoUpdated.getUser().isEmpty()) {
+            currentUser.setUser(userInfoUpdated.getUser());
+        }
 
-        currentUser.setUser(userInfoUpdated.getUser());
-        currentUser.setCurrentJob(userInfoUpdated.getCurrentJob());
-        currentUser.setBio(userInfoUpdated.getBio());
+        if(userInfoUpdated.getCurrentJob() != null && !userInfoUpdated.getCurrentJob().isEmpty()){
+            currentUser.setCurrentJob(userInfoUpdated.getCurrentJob());
+        }
+
+        if(userInfoUpdated.getBio() != null && !userInfoUpdated.getBio().isEmpty()){
+            currentUser.setBio(userInfoUpdated.getBio());
+        }
 
         userRepository.save(currentUser);
         return currentUser;
+    }
+
+    public ResponseEntity deleteUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserHive userHive = userRepository.findByEmail(auth.getName());
+
+        if(userHive == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "usuário já foi deletado");
+        }
+
+        userRepository.delete(userHive);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

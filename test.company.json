@@ -1,0 +1,64 @@
+[{
+  "_id": "Magalu",
+  "typeOfCompany": "Business",
+  "siteCompany": "https://www.magazineluiza.com.br/",
+  "numberEmployees": 500,
+  "jobsOpportunitiesIds": [
+    "64ea4596e5c7e318a4c1ccfa",
+    "64ecfd159924e87fc25bfa85"
+  ],
+  "city": "São Paulo",
+  "state": "São Paulo",
+  "country": "Brasil",
+  "_class": "com.tcc.Hive.company.Company"
+},
+{
+  "_id": "fintechMagalu",
+  "typeOfCompany": "Business",
+  "siteCompany": "https://fintechmagalu.com.br/",
+  "numberEmployees": 500,
+  "jobsOpportunitiesIds": [
+    "64ecfd8f9924e87fc25bfa86",
+    "64ecfdab9924e87fc25bfa87"
+  ],
+  "city": "São Paulo",
+  "state": "São Paulo",
+  "country": "Brasil",
+  "_class": "com.tcc.Hive.company.Company"
+},
+{
+  "_id": "ti@email.com",
+  "companyName": "ti tecnologias",
+  "siteCompany": "123",
+  "numberEmployees": 123,
+  "jobsOpportunitiesIds": [],
+  "password": "123",
+  "city": "123",
+  "state": "123",
+  "country": "123",
+  "_class": "com.tcc.Hive.company.Company"
+},
+{
+  "_id": "Americanas@email.com",
+  "companyName": "Americanas",
+  "siteCompany": "americanas.com.br",
+  "numberEmployees": 10000,
+  "jobsOpportunitiesIds": [],
+  "password": "123",
+  "city": "Sao Paulo",
+  "state": "Sao Paulo",
+  "country": "Brasil",
+  "_class": "com.tcc.Hive.company.Company"
+},
+{
+  "_id": "Yupi@email.com",
+  "companyName": "Yupi",
+  "siteCompany": "yupi.com.br",
+  "numberEmployees": 20,
+  "jobsOpportunitiesIds": [],
+  "password": "123",
+  "city": "João Pessoa",
+  "state": "Paraíba",
+  "country": "Brasil",
+  "_class": "com.tcc.Hive.company.Company"
+}]

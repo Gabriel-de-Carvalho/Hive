@@ -49,4 +49,9 @@ public class UserController {
     public ResponseEntity updateUser(@RequestBody UserHive userHive){
         return new ResponseEntity(userService.updateUser(userHive), HttpStatus.OK);
     }
+
+    @DeleteMapping("/")
+    public ResponseEntity deleteUser(){
+        return userService.deleteUser();
+    }
 }
