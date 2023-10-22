@@ -52,13 +52,24 @@ public class CompanyService {
         if(currentCompany == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "empresa não cadastrada");
         }
-
-        currentCompany.setCompanyName(companyNewInfo.getCompanyName());
-        currentCompany.setSiteCompany(companyNewInfo.getSiteCompany());
-        currentCompany.setCity(companyNewInfo.getCity());
-        currentCompany.setState(companyNewInfo.getState());
-        currentCompany.setCountry(companyNewInfo.getCountry());
-        currentCompany.setNumberEmployees(companyNewInfo.getNumberEmployees());
+        if(companyNewInfo.getCompanyName() != null && !companyNewInfo.getCompanyName().isEmpty()){
+            currentCompany.setCompanyName(companyNewInfo.getCompanyName());
+        }
+        if(companyNewInfo.getSiteCompany() != null && !companyNewInfo.getSiteCompany().isEmpty()){
+            currentCompany.setSiteCompany(companyNewInfo.getSiteCompany());
+        }
+        if(companyNewInfo.getCity() != null && !companyNewInfo.getCity().isEmpty()){
+            currentCompany.setCity(companyNewInfo.getCity());
+        }
+        if(companyNewInfo.getState() != null && !companyNewInfo.getState().isEmpty()){
+            currentCompany.setState(companyNewInfo.getState());
+        }
+        if(companyNewInfo.getCountry() != null && !companyNewInfo.getCountry().isEmpty()){
+            currentCompany.setCountry(companyNewInfo.getCountry());
+        }
+        if(companyNewInfo.getNumberEmployees() != null && companyNewInfo.getNumberEmployees() > 0){
+            currentCompany.setNumberEmployees(companyNewInfo.getNumberEmployees());
+        }
 
         companyRepository.save(currentCompany);
 
